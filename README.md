@@ -2,7 +2,7 @@
 
 ![alt-text](wallstreet.jpeg "My Portfolio") 
 
-This program tracks your portfolio using a Streamlit interface.  Basic functions include:
+### This program tracks your portfolio using a Streamlit interface.  Basic functions include:
 
 - **Add/edit stocks in your portfolio** 
 - **Saves portfolio to a database**
