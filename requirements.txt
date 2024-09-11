@@ -1,0 +1,7 @@
+streamlit~=1.38.0
+pandas~=2.2.2
+numpy~=2.1.1
+yfinance~=0.2.43
+seaborn~=0.13.2
+matplotlib~=3.9.2
+plotly~=5.24.0
