@@ -69,8 +69,8 @@ def get_current_price(ticker):
 def main():
     st.set_page_config(layout="wide", page_title="Portfolio Tracker", page_icon=":material/trending_up:")
 
-    st.title(":rainbow[Stock Portfolio Tracker]")
-    st.divider()
+    st.header(":rainbow[Stock Portfolio Tracker]", divider='rainbow')
+    st.write("")
 
     init_db()
 

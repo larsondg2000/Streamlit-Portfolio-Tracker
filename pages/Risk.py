@@ -35,8 +35,8 @@ def get_current_price(ticker):
 
 def main():
     st.set_page_config(layout="wide", page_title="Risk Analysis", page_icon=":material/analytics:")
-    st.title(":rainbow[Portfolio Risk Analysis]")
-    st.divider()
+    st.header(":rainbow[Portfolio Risk Analysis]", divider='rainbow')
+    st.write("")
 
     if 'portfolio' not in st.session_state:
         st.session_state.portfolio = load_portfolio()

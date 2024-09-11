@@ -38,8 +38,8 @@ def get_dividend_info(ticker, shares):
 
 def main():
     st.set_page_config(layout="wide", page_title="Dividends", page_icon=":material/attach_money:")
-    st.title(":rainbow[Dividend Tracker]")
-    st.divider()
+    st.header(":rainbow[Dividend Tracker]", divider='rainbow')
+    st.write("")
 
     # Load portfolio data
     portfolio = load_portfolio()
