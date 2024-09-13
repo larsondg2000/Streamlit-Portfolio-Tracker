@@ -54,7 +54,7 @@ def update_stock(id, account, shares, cost_basis):
 def get_current_price(ticker):
     try:
         stock = yf.Ticker(ticker)
-        price = stock.history(period="1d").Close.iloc[0]
+        price = stock.info['currentPrice']
         return price
     except IndexError:
         # Handle the case where the history data is empty
@@ -84,8 +84,6 @@ def main():
     display_df['Current Price'] = display_df['ticker'].apply(get_current_price)
     display_df['Total Value'] = display_df['shares'] * display_df['Current Price']
     total_portfolio_value = display_df['Total Value'].sum()
-    if total_portfolio_value == 0:
-        total_portfolio_value = 250000
     display_df['Portfolio %'] = (display_df['Total Value'] / total_portfolio_value) * 100
     display_df['Gain/Loss'] = display_df['Total Value'] - (display_df['cost_basis'] * display_df['shares'])
     display_df['Gain/Loss %'] = (display_df['Gain/Loss'] / (display_df['cost_basis'] * display_df['shares'])) * 100
