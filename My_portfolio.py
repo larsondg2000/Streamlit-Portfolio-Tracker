@@ -84,6 +84,8 @@ def main():
     display_df['Current Price'] = display_df['ticker'].apply(get_current_price)
     display_df['Total Value'] = display_df['shares'] * display_df['Current Price']
     total_portfolio_value = display_df['Total Value'].sum()
+    if total_portfolio_value == 0:
+        total_portfolio_value = 250000
     display_df['Portfolio %'] = (display_df['Total Value'] / total_portfolio_value) * 100
     display_df['Gain/Loss'] = display_df['Total Value'] - (display_df['cost_basis'] * display_df['shares'])
     display_df['Gain/Loss %'] = (display_df['Gain/Loss'] / (display_df['cost_basis'] * display_df['shares'])) * 100
