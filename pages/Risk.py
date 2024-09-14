@@ -21,7 +21,7 @@ def load_portfolio():
 def get_current_price(ticker):
     try:
         stock = yf.Ticker(ticker)
-        price = stock.history(period="1d").Close.iloc[0]
+        price = stock.info['currentPrice']
         return price
     except IndexError:
         # Handle the case where the history data is empty
