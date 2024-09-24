@@ -78,15 +78,51 @@ def main():
     sd_p_annual = sd_p * np.sqrt(250)
     individual_risks = np.std(returns_df, axis=0, ddof=1) * np.sqrt(250)
 
+    # Calculate individual sharp ratio
+    sharp_individual = (returns_df.mean() / returns_df.std()) * np.sqrt(250)
+
+    # Get values to calculate portfolio Sharpe Ratio
+    shares_df = risk_df.copy().drop(["id","cost_basis", "account", "Current Price", "Total Value", "Portfolio %"], axis=1)
+    shares_df.set_index("ticker", inplace=True)
+    prices_df = df_prices.copy()
+
+    # Multiply prices by shares
+    for ticker in shares_df.index:
+        if ticker in prices_df.columns:
+            prices_df[ticker] = prices_df[ticker] * shares_df.loc[ticker, "shares"]
+
+    # Add a new column that sums each row
+    prices_df['Total Value'] = prices_df.iloc[:, 1:].sum(axis=1)
+
+    # Add new column for daily return
+    prices_df["return"] = prices_df['Total Value'].pct_change().fillna(0) * 100
+
+    # Calculate Sharpe Ratio
+    sharpe_ratio = ((prices_df["return"].mean() / prices_df["return"].std()) * np.sqrt(250)).round(3)
+
+    # Calculate 5 year cum return
+    cum_return = ((prices_df['Total Value'].iloc[-1] - prices_df['Total Value'].iloc[0]) /
+                  prices_df['Total Value'].iloc[0] * 100)
+
     # Sort the risk values
     sorted_risks = individual_risks.sort_values(ascending=False)
     sorted_risks.index.name = 'Ticker'
     sorted_risks.columns = ['Risk']
 
-    st.subheader("Annual Portfolio Risk")
-    st.subheader(f":blue[{sd_p_annual / 100:.3f}]")
+    col1, col2, col3 = st.columns([1, 1, 1])
+    with col1:
+        st.subheader("Annual Portfolio Risk")
+        st.subheader(f":blue[{sd_p_annual / 100:.3f}]")
+    with col2:
+        st.subheader("Portfolio Sharpe Ratio")
+        st.subheader(f":blue[{sharpe_ratio}]")
+    with col3:
+        st.subheader("5-Year Cumulative Return")
+        st.subheader(f":blue[{cum_return:.2f}%]")
+    
     st.divider()
 
+    # Plot risk
     fig = px.line(sorted_risks, markers=True)
     fig.update_layout(height=600,
                       title="Risk by Stock",
@@ -98,19 +134,32 @@ def main():
     st.plotly_chart(fig)
 
     # Display risks as a row under the chart
-    data = {"Risk": individual_risks}
+    data = {"Risk": individual_risks,
+            "Sharp Ratio": sharp_individual}
     df_test = pd.DataFrame(data)
     st.table(df_test.sort_values(by='Risk', ascending=False).T)
 
-    rainbow_divider = """
-    <hr style="height:10px;border:none;background:linear-gradient(to right, red, orange, 
-    yellow, green, blue, indigo, violet);">
-    """
-    st.markdown(rainbow_divider, unsafe_allow_html=True)
+    # Sort and plot Sharp
+    sorted_sharp = sharp_individual.sort_values(ascending=False)
+    sorted_sharp.index.name = 'Ticker'
+    sorted_sharp.columns = ['Sharp']
 
-    st.subheader("Risk Calculation Explained")
+    # Plot risk
+    fig = px.line(sorted_sharp, markers=True)
+    fig.update_layout(height=600,
+                      title="Sharpe Ratio by Stock",
+                      xaxis_title="Stock Ticker",
+                      yaxis_title="Sharpe",
+                      titlefont_size=26,
+                      title_font_color="white",
+                      showlegend=False)
+    fig.update_traces(line_color='purple')
+    st.plotly_chart(fig)
 
-    col1, col2, col3 = st.columns([2, .3, 2])
+
+    st.subheader("Risk Explained", divider='rainbow')
+
+    col1, col2, col3 = st.columns([2, 1, 2])
     with col1:
         st.markdown("This assesses the risk associated with individual stocks and the overall portfolio by calculating "
                     "key statistical measures such as variance, standard deviation, covariance, and weighted return. "
@@ -125,7 +174,38 @@ def main():
     with col2:
         st.write("")
     with col3:
-        st.image("risk_formulas.png")
+        st.image("risk_formulas.png", width=500)
+
+    st.header("")
+
+    st.subheader("Sharpe Ratio Explained", divider='rainbow')
+
+    col1, col2, col3 = st.columns([2, 1, 2])
+
+    with col1:
+        st.markdown("The Sharpe ratio is a measure of risk-adjusted return, comparing an investment's excess "
+                    "return to its volatility. It helps investors understand the return of an investment compared "
+                    "to its risk, providing a way to compare different investments on a risk-adjusted basis.")
+        st.write("")
+        st.markdown('''
+        **Sharpe Ratio Calculation**:
+        - Calculates the average return of the portfolio over the risk-free rate.
+        - Determines the standard deviation of the portfolio returns.
+        - Divides the excess return by the standard deviation to get the Sharpe ratio.
+        - A higher Sharpe ratio indicates better risk-adjusted performance.
+        ''')
+
+    with col2:
+        st.write("")
+
+    with col3:
+        st.image("sharp.png", width=300)
+
+    rainbow_divider = """
+      <hr style="height:5px;border:none;background:linear-gradient(to right, red, orange, 
+      yellow, green, blue, indigo, violet);">
+      """
+    st.markdown(rainbow_divider, unsafe_allow_html=True)
 
 
 if __name__ == "__main__":

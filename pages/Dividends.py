@@ -109,13 +109,13 @@ def main():
 
         # Dividend totals vs. ticker
         fig.add_trace(
-            go.Bar(x=df['Ticker'], y=df['Total'], name="Yearly Dividend Total"),
+            go.Bar(x=df['Ticker'], y=df['Total'], name="Yearly Dividend Total", marker_color='darkblue'),
             row=1, col=1
         )
 
         # Dividend yield vs. ticker
         fig.add_trace(
-            go.Bar(x=df['Ticker'], y=df['Yield'], name="Dividend Yield", marker_color='gray'),
+            go.Bar(x=df['Ticker'], y=df['Yield'], name="Dividend Yield", marker_color='blueviolet'),
             row=2, col=1
         )
 
