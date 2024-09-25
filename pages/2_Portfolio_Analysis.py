@@ -79,7 +79,7 @@ def main():
     sharp_individual = (returns_df.mean() / returns_df.std()) * np.sqrt(250)
 
     # Get values to calculate portfolio Sharpe Ratio
-    shares_df = risk_df.copy().drop(["id","cost_basis", "account", "Current Price", "Total Value", "Portfolio %"], axis=1)
+    shares_df = risk_df.filter(["ticker", "shares"])
     shares_df.set_index("ticker", inplace=True)
     prices_df = df_prices.copy()
 
