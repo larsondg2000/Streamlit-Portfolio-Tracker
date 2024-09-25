@@ -39,14 +39,14 @@ def save_stock(ticker, account, shares, cost_basis):
     conn.close()
 
 
-def update_stock(id, account, shares, cost_basis):
+def update_stock(id1, account, shares, cost_basis):
     conn = sqlite3.connect('portfolio.db')
     c = conn.cursor()
     if shares > 0:
         c.execute("UPDATE stocks SET account = ?, shares = ?, cost_basis = ? WHERE id = ?",
-                  (account, shares, cost_basis, id))
+                  (account, shares, cost_basis, id1))
     else:
-        c.execute("DELETE FROM stocks WHERE id = ?", (id,))
+        c.execute("DELETE FROM stocks WHERE id = ?", (id1,))
     conn.commit()
     conn.close()
 

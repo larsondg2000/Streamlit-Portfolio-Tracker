@@ -31,14 +31,11 @@ def get_current_price(ticker):
 
 def main():
     st.set_page_config(layout="wide", page_title="Risk Analysis", page_icon=":material/analytics:")
-    st.header(":rainbow[Portfolio Risk Analysis]", divider='rainbow')
+    st.header(":rainbow[Portfolio Analysis]", divider='rainbow')
     st.write("")
 
     if 'portfolio' not in st.session_state:
         st.session_state.portfolio = load_portfolio()
-
-    # Load portfolio data
-    portfolio = load_portfolio()
 
     # Get weights list for individual stocks (Portfolio %)
     risk_df = st.session_state.portfolio.copy()
@@ -86,7 +83,7 @@ def main():
     shares_df.set_index("ticker", inplace=True)
     prices_df = df_prices.copy()
 
-    # Multiply prices by shares
+    # Multiply prices by shares to get total value
     for ticker in shares_df.index:
         if ticker in prices_df.columns:
             prices_df[ticker] = prices_df[ticker] * shares_df.loc[ticker, "shares"]
@@ -104,11 +101,6 @@ def main():
     cum_return = ((prices_df['Total Value'].iloc[-1] - prices_df['Total Value'].iloc[0]) /
                   prices_df['Total Value'].iloc[0] * 100)
 
-    # Sort the risk values
-    sorted_risks = individual_risks.sort_values(ascending=False)
-    sorted_risks.index.name = 'Ticker'
-    sorted_risks.columns = ['Risk']
-
     col1, col2, col3 = st.columns([1, 1, 1])
     with col1:
         st.subheader("Annual Portfolio Risk")
@@ -121,6 +113,11 @@ def main():
         st.subheader(f":blue[{cum_return:.2f}%]")
     
     st.divider()
+
+    # Sort the risk values
+    sorted_risks = individual_risks.sort_values(ascending=False)
+    sorted_risks.index.name = 'Ticker'
+    sorted_risks.columns = ['Risk']
 
     # Plot risk
     fig = px.line(sorted_risks, markers=True)
