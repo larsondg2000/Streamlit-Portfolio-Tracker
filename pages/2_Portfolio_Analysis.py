@@ -95,7 +95,7 @@ def main():
     prices_df["return"] = prices_df['Total Value'].pct_change().fillna(0) * 100
 
     # Calculate Sharpe Ratio
-    sharpe_ratio = ((prices_df["return"].mean() / prices_df["return"].std()) * np.sqrt(250)).round(3)
+    sharpe_ratio = ((prices_df["return"].mean()/ prices_df["return"].std()) * np.sqrt(250)).round(3)
 
     # Calculate 5 year cum return
     cum_return = ((prices_df['Total Value'].iloc[-1] - prices_df['Total Value'].iloc[0]) /

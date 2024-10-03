@@ -81,10 +81,13 @@ def main():
             total_yearly_dividends = df['Total'].apply(lambda x: float(x.replace('$', ''))).sum()
             st.write(f"Total Yearly Dividends: ")
             st.subheader(f":green[${total_yearly_dividends:.2f}]")
+            st.write("")
+            st.write(f"Average Monthly Dividends: ")
+            st.subheader(f":green[${(total_yearly_dividends / 12):.2f}]")
+
             df['Yield'] = df['Yield'].apply(lambda x: float(x.replace('%', '')))
             average_yield = df['Yield'].mean()
-            # st.divider()
-            st.header("")
+            st.write("")
             st.write(f"Average Dividend Yield: ")
             st.subheader(f":green[{average_yield:.2f}%]")
 
